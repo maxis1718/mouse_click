@@ -62,8 +62,9 @@ class ClickerHeroes(object):
         delay = 1 if 'delay' not in kwargs else kwargs["delay"]
 
         ## override delay by setting freq
-        if 'freq' in kwargs:
-            delay = 1.0/freq
+        if 'freq' in kwargs and kwargs['freq']:
+            if 1.0/freq < delay:
+                delay = 1.0/freq
 
         x = self.x if 'x' not in kwargs else kwargs['x']
         y = self.y if 'y' not in kwargs else kwargs['y']
@@ -85,22 +86,49 @@ class ClickerHeroes(object):
                 d = self.dist(current, prev)
                 if d > min_dist:
                     logging.debug('(%.2f, %.2f)-->(%.2f, %.2f): %.2f [stop]' % (prev[0], prev[1], current[0], current[1], d) )
+                    logging.info('Stop clicking!')
                     break
                 else:
                     logging.debug('(%.2f, %.2f)-->(%.2f, %.2f): %.2f [pass]' % (prev[0], prev[1], current[0], current[1], d) )
                     self.mouse.click(x, y, button=1, n=1) # Button is defined as 1 = left, 2 = right, 3 = middle.
 
             prev = current
-            
+
+def usage():
+    print 'python %s x y [options]' % (__file__)
+    print 
+    print 'x, y: the positions of mouse'
+    print 
+    print 'options:'
+    print '  -d, --delay :   the delay between each click (in seconds)'
+    print '  -f, --freq  :   the frequecy of click per second'
+    print '  -h, --help  :   display help messages'
+    print '  --verbose   :   show debug messages'
+    exit(-1)
 
 if __name__ == '__main__':
     
     # from simple_click import ClickerHeroes
 
-    import sys
-    x, y = [1550, 585] if len(sys.argv) < 3 else map(lambda a:float(a), sys.argv[1:])
-    ch = ClickerHeroes(x=x, y=y)
-    ch.run(delay=0.05, freq=1000)
-    
+    import sys, getopt
+    if len(sys.argv) < 3:
+        usage()
+    else:
+        x, y = map(lambda a:float(a), sys.argv[1:3])
+        try:
+            opts, args = getopt.getopt(sys.argv[3:],'hd:f:',['help','delay=', 'freq=', 'verbose'])
+        except getopt.GetoptError:
+            usage()
+
+        ### read options
+        verbose, freq, delay = False, 1, 0.05
+        for opt, arg in opts:
+            if opt in ('-h', '--help'): usage()
+            elif opt in ('-d','--delay'): delay = float(arg.strip())
+            elif opt in ('-f','--freq'): freq = float(arg.strip())
+            elif opt in ('--verbose',): verbose = True
+
+        ch = ClickerHeroes()
+        ch.run(x=x, y=y, delay=delay, freq=freq)
 
    
