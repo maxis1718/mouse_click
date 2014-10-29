@@ -1,6 +1,5 @@
 # codingL utf-8
 
-from Quartz import * # for Mac
 from pymouse import PyMouse # PyUserInput required
 import math, time, logging
 
@@ -36,7 +35,9 @@ class ClickerHeroes(object):
         self.NORMAL = 0.05
         self.STUPID = 0.1
 
+        logging.debug("loading PyMouse module...")
         self.mouse = PyMouse()
+        logging.debug("PyMouse module loaded.")
 
     def dist(self, a, b): 
         """calculate distance between two point in 2-D plane"""
@@ -58,8 +59,12 @@ class ClickerHeroes(object):
             clicks/second
         """
 
+
         sensitive = self.NORMAL if 'sensitive' not in kwargs else kwargs["sensitive"]
         delay = 1 if 'delay' not in kwargs else kwargs["delay"]
+
+        logging.debug("delay: %f" % (float(delay)) )
+        logging.debug("sensitive: %f" % (float(sensitive)) )
 
         ## override delay by setting freq
         if 'freq' in kwargs and kwargs['freq']:
@@ -73,8 +78,16 @@ class ClickerHeroes(object):
             raise Exception("x and y must be given: run(x=..., y=...)")
 
         ## minimum distance to stop
-        min_dist = max(self.mouse.screen_size())*sensitive
+        if 'screen' in kwargs:
+            screen = kwargs['screen']
+        else:
+            self.mouse.screen_size()
 
+        min_dist = max(screen)*sensitive
+
+        logging.debug("the min distance is set as %.3f" % (float(min_dist)) )
+
+        logging.debug("move mouse to %d, %d" % (int(x), int(y)) )
         self.mouse.move(x, y)
 
         logging.info('Ready to go!')
@@ -128,7 +141,7 @@ if __name__ == '__main__':
             elif opt in ('-f','--freq'): freq = float(arg.strip())
             elif opt in ('--verbose',): verbose = True
 
-        ch = ClickerHeroes()
-        ch.run(x=x, y=y, delay=delay, freq=freq)
+        ch = ClickerHeroes(verbose=verbose)
+        ch.run(x=x, y=y, delay=delay, freq=freq, screen=(1440, 900))
 
    
