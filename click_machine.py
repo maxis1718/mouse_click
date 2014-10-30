@@ -31,6 +31,7 @@ class Mouse(PyMouse):
         self.prev_position = x, y
     
     def is_disturbed(self):
+        time.sleep(0.005)
         x, y = self.position()
         if self.prev_position:
             px, py = self.prev_position
@@ -57,7 +58,7 @@ class Action:
     def act(self):
         logger.info(`self`)
         if mouse.is_disturbed():
-            raw_input('press <ENTER> to continue.')
+            raw_input("Don't move your mouse! Press <ENTER> to continue.")
             for n in reversed(range(2, 12)):
                 print '\r' + '<--'.join(map(str, range(1, n))) + ' ',
                 sys.stdout.flush()
@@ -117,8 +118,6 @@ class Sleep(namedtuple('Sleep', ['seconds']), Action):
         super(Sleep, self).act()
         time.sleep(self.seconds)
 
-
-
 if __name__ == '__main__':
     # Move 
     Move(500, 500).act()
@@ -127,10 +126,20 @@ if __name__ == '__main__':
     # Click 3 times
     Clicks(300, 300, times = 3, interval = 0.5).act()
 
+    i_got_a_move = Actions([
+        Move(200, 100),
+        Move(300, 200),
+        Repeat(Sleep(0.5), times = 3)
+    ])
+
     # Series actions
-    Repeat(
+    i_got_more_moves = Repeat(
         Actions([
             Move(500, 500),
             Click(200, 200),
             Clicks(300, 300, times = 3, interval = 0.5),
-        ], interval = 1)).act()
+            i_got_a_move,
+        ], interval = 1))
+
+    i_got_more_moves.act()
+    
