@@ -62,7 +62,8 @@ def main():
                                 MouseMove('upgrade 1', (173, 349), 1, 0),
                             ],
                         ],
-                        MouseMove('sleep 5 sec', (173, 349), 1, 5)
+                        MouseMove('upgrade 1, skill 1 sleep', (297, 349), 1, 5),
+
                     ],
                 ]
     while True:
