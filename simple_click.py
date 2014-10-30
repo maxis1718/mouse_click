@@ -91,7 +91,6 @@ class ClickerHeroes(object):
                 else:
                     logging.debug('(%.2f, %.2f)-->(%.2f, %.2f): %.2f [pass]' % (prev[0], prev[1], current[0], current[1], d) )
                     self.mouse.click(x, y, button=1, n=1) # Button is defined as 1 = left, 2 = right, 3 = middle.
-
             prev = current
 
 def usage():
@@ -114,7 +113,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 3:
         usage()
     else:
-        x, y = map(lambda a:float(a), sys.argv[1:3])
+        x, y = map(float, sys.argv[1:3])
         try:
             opts, args = getopt.getopt(sys.argv[3:],'hd:f:',['help','delay=', 'freq=', 'verbose'])
         except getopt.GetoptError:
