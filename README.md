@@ -1,14 +1,13 @@
-mouse_click
+ickmachine
 ===========
 
 
-## simple_click
+## tool > simple_click
 
-A simple click tool for ClickerHeroes - just perform clicks!
+A tool just performing clicks!
 
 ```
-sudo pip install PyUserInput
-python simple_click.py x y [options]
+./simple_click x y [options]
 ```
 
 
