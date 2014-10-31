@@ -1,3 +1,5 @@
+from __future__ import division
+
 import time
 import logging
 
@@ -49,23 +51,30 @@ from collections import namedtuple
     
 from abc import ABCMeta, abstractmethod
 
-class MouseDisturbed(Exception): pass
+# class MouseDisturbed(Exception): pass
 import sys
+import getpass
+
 
 class Action:
     __metaclass__ = ABCMeta
+    
     @abstractmethod
     def act(self):
         logger.info(`self`)
         if mouse.is_disturbed():
-            raw_input("Don't move your mouse! Press <ENTER> to continue.")
-            for n in reversed(range(2, 12)):
-                print '\r' + '<--'.join(map(str, range(1, n))) + ' ',
+            getpass.getpass('KEEP YOUR HANDS OFF THE MOUSE!\n'
+                            'Press <ENTER> to continue.')
+            
+            for n in reversed(xrange(2, 10 + 2)):
+                print '\r\033[K' + ' <- '.join(map(str, range(1, n))) + ' \a',
                 sys.stdout.flush()
-                time.sleep(1)
-                print '\r\033[K',
+                time.sleep(0.5)
+                print '\b\b\b\b\033[K\a',
                 sys.stdout.flush()
+                time.sleep(0.5)
             # raise MouseDisturbed
+        
 
 class Actions(namedtuple('Actions', ['actions', 'interval']), Action):
     def __new__(cls, actions , interval = 0.03):
