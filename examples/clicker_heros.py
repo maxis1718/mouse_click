@@ -1,3 +1,8 @@
+
+#
+# CURRENTLY UNUSABLE
+#
+
 from mouse_click import MouseMove, go_click
 import time
 
